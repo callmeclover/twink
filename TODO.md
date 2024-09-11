@@ -1,0 +1,4 @@
+- [ ] figure out how gtk ui works
+- [ ] figure out indexing folders
+- [ ] figure out playing music
+- [ ] figure out syncing music with ui

@@ -1,7 +1,13 @@
 use adw::{prelude::*, AboutDialog, ActionRow, ApplicationWindow, HeaderBar};
 use gtk::{gio, Application, Box, ListBox, Orientation, ShortcutsWindow};
 
+mod uisrc;
+use uisrc::MainWindow;
+
 fn main() {
+    gio::resources_register_include!("twink.gresource")
+        .expect("Failed to register resources.");
+
     let app: Application = Application::builder()
         .application_id("com.github.callmeclover.Twink")
         .build();
@@ -18,7 +24,7 @@ fn main() {
 }
 
 fn on_activate(app: &Application) {
-    // ActionRows are only available in Adwaita
+    /*
     let row: ActionRow = ActionRow::builder()
         .activatable(true)
         .selectable(false)
@@ -59,6 +65,7 @@ fn on_activate(app: &Application) {
     let about: AboutDialog = AboutDialog::builder()
         .application_name("Twink")
         .version("0.1.0")
+        .release_notes(include_str!("../CHANGELOG.md"))
         .license_type(gtk::License::MitX11)
         .license(include_str!("../LICENSE.md"))
         .developer_name("Clover Johnson (callmeclover)")
@@ -72,8 +79,10 @@ fn on_activate(app: &Application) {
 
     window.add_action_entries([about_action]);
 
-    let help: ShortcutsWindow = ShortcutsWindow::builder().application(app).transient_for(&window).build();
+    let help: ShortcutsWindow = ShortcutsWindow::builder().application(app).transient_for(&window).child(child).build();
     window.set_help_overlay(Some(&help));
+    */
+    let window: MainWindow = MainWindow::new(app);
 
     window.present();
 }

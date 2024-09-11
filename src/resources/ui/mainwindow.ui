@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="MainWindow" parent="AdwApplicationWindow">
+    <property name="title">Twink</property>
+    <property name="width-request">640</property>
+    <property name="height-request">480</property>
+    <child>
+      <object id="action-box" class="GtkBox">
+        <property name="orientation">1</property>
+        <property name="spacing">0</property>
+        <child>
+          <object class="AdwHeaderBar">
+            <property name="title-widget">
+              <object class="AdwWindowTitle">
+                <property name="title" translatable="no">Twink</property>
+                <property name="subtitle">Nothing Playing</property>
+              </object>
+            </property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkListBox" id="content">
+            <property name="selection-mode">none</property>
+            <style>
+              <class name="content"/>
+            </style>
+            <child>
+              <object class="AdwActionRow" id="button">
+                <signal name="clicked" handler="handle_button_clicked" swapped="true"/>
+                <property name="title">Click Me!</property>
+                <property name="margin-bottom">32</property>
+                <property name="margin-top">32</property>
+                <property name="margin-left">32</property>
+                <property name="margin-right">32</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
