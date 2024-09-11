@@ -9,7 +9,7 @@ fn main() {
         .expect("Failed to register resources.");
 
     let app: Application = Application::builder()
-        .application_id("com.github.callmeclover.Twink")
+        .application_id("com.github.Twink")
         .build();
 
     app.connect_startup(|_| {
