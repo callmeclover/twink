@@ -1,4 +1,3 @@
-~~- [ ] figure out how gtk ui works~~
 - [ ] use gtk blueprint language
 - [ ] figure out indexing folders
 - [ ] figure out playing music

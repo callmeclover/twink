@@ -5,13 +5,13 @@ edition = "2021"
 
 [dependencies]
 adw = { version = "0.7.0", package = "libadwaita", features = ["v1_5"] }
-gtk = { version = "0.9.1", package = "gtk4", features = ["v4_14"] }
 diesel = { version = "2.2.0", features = ["sqlite", "returning_clauses_for_sqlite_3_35"], default-features = false }
 # build libsqlite3 as part of the build process
 # uncomment this line if you run into setup issues
 # libsqlite3-sys = { version = "0.30", features = ["bundled"] }
 dotenvy = "0.15"
+gtk = { version = "0.9.1", package = "gtk4", features = ["blueprint", "v4_14"] }
 serde = { version = "1.0.210", features = ["derive"] }
 
-[build-dependencies]
-glib-build-tools = "0.20.0"
+#[build-dependencies]
+#glib-build-tools = "0.20.0"
