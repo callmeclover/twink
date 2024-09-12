@@ -2,7 +2,6 @@
 name = "twink"
 version = "0.1.0"
 edition = "2021"
-build = "build.rs"
 
 [dependencies]
 adw = { version = "0.7.0", package = "libadwaita", features = ["v1_5"] }

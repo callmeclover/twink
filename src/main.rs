@@ -1,13 +1,7 @@
 use adw::{prelude::*, AboutDialog, ActionRow, ApplicationWindow, HeaderBar};
 use gtk::{gio, Application, Box, ListBox, Orientation, ShortcutsWindow};
 
-mod uisrc;
-use uisrc::MainWindow;
-
 fn main() {
-    gio::resources_register_include!("twink.gresource")
-        .expect("Failed to register resources.");
-
     let app: Application = Application::builder()
         .application_id("com.github.Twink")
         .build();
@@ -24,7 +18,6 @@ fn main() {
 }
 
 fn on_activate(app: &Application) {
-    /*
     let row: ActionRow = ActionRow::builder()
         .activatable(true)
         .selectable(false)
@@ -81,8 +74,6 @@ fn on_activate(app: &Application) {
 
     let help: ShortcutsWindow = ShortcutsWindow::builder().application(app).transient_for(&window).child(child).build();
     window.set_help_overlay(Some(&help));
-    */
-    let window: MainWindow = MainWindow::new(app);
-
+    
     window.present();
 }
