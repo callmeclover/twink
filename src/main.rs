@@ -1,9 +1,14 @@
+mod ui;
+mod actions;
+
+use ui::window::main_window;
+
 use adw::{prelude::*, AboutDialog, ActionRow, ApplicationWindow, HeaderBar};
 use gtk::{gio, Application, Box, ListBox, Orientation, ShortcutsWindow};
 
 fn main() {
     let app: Application = Application::builder()
-        .application_id("com.github.Twink")
+        .application_id("com.github.callmeclover.Twink")
         .build();
 
     app.connect_startup(|_| {
@@ -47,33 +52,7 @@ fn on_activate(app: &Application) {
     );
     content.append(&list);
 
-    let window: ApplicationWindow = ApplicationWindow::builder()
-        .application(app)
-        .width_request(640)
-        .height_request(480)
-        .content(&content)
-        .show_menubar(true)
-        .build();
-
-    let about: AboutDialog = AboutDialog::builder()
-        .application_name("Twink")
-        .version("0.1.0")
-        .release_notes(include_str!("../CHANGELOG.md"))
-        .license_type(gtk::License::MitX11)
-        .license(include_str!("../LICENSE.md"))
-        .developer_name("Clover Johnson (callmeclover)")
-        .build();
-
-    let about_action: gio::ActionEntry<ApplicationWindow> = gio::ActionEntry::builder("about")
-        .activate(move |window: &ApplicationWindow, _, _| {
-            about.present(Some(window));
-        })
-        .build();
-
-    window.add_action_entries([about_action]);
-
-    let help: ShortcutsWindow = ShortcutsWindow::builder().application(app).transient_for(&window).child(child).build();
-    window.set_help_overlay(Some(&help));
+    let window = main_window();
     
     window.present();
 }
