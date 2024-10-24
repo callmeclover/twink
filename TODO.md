@@ -1,5 +1,7 @@
+# TODO:
+
 - [ ] Part 1: Doing The Thing It Was Made To Do
-    - [ ] Get UI to work
+    - [x] Get basic UI to work
     - [ ] Play audio with UI
         - [ ] Play/pause features
         - [ ] Advanced features (Seek and others)
