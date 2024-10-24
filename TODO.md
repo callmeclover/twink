@@ -1,0 +1,12 @@
+- [ ] Part 1: Doing The Thing It Was Made To Do
+    - [ ] Get UI to work
+    - [ ] Play audio with UI
+        - [ ] Play/pause features
+        - [ ] Advanced features (Seek and others)
+    - [ ] Metadata tooling
+            - [ ] Display metadata in human-readable format
+    - [ ] Library tooling
+        - [ ] Directory walking
+        - [ ] Library indexing
+        - [ ] Storage of data
+
