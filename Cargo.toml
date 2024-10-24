@@ -1,0 +1,10 @@
+[package]
+name = "twink"
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0"
+
+[dependencies]
+anyhow = "1.0.91"
+iced = { version = "0.13.1", features = ["tokio"] }
+tokio = { version = "1.41.0", features = ["full"] }
