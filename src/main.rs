@@ -1,12 +1,10 @@
-mod types;
-
 use anyhow::Result;
-use iced::widget::{
-    button, column, horizontal_space, lazy, pick_list, row, scrollable, text, text_input,
+use iced::{
+    widget::{button, column},
+    Element,
 };
-use iced::{Element, Fill};
-use std::collections::HashSet;
-use types::{Color, Item, Order};
+use rodio::{Decoder, OutputStream, Sink};
+use std::{fs::File, io::BufReader, sync::mpsc, thread};
 
 pub fn main() -> Result<()> {
     iced::run("Twink", App::update, App::view)?;
@@ -14,107 +12,60 @@ pub fn main() -> Result<()> {
     Ok(())
 }
 
+/// Event messages.
+#[derive(Debug, Clone)]
+enum Message {
+    AudioHandlerResume,
+    AudioHandlerPause,
+}
+
+#[derive(Debug, Clone)]
+enum AudioHandlerEvent {
+    Resume,
+    Pause,
+}
+
+/// The holder for app data.
 struct App {
-    version: u8,
-    items: HashSet<Item>,
-    input: String,
-    order: Order,
+    //version: u8,
+    audio_handler: Sink, //mpsc::Sender<AudioHandlerEvent>,
+                         //input: String,
 }
 
 impl Default for App {
     fn default() -> Self {
+        let (stream, stream_handle) = OutputStream::try_default().unwrap();
+        Box::leak(Box::new(stream));
+        let audio_handler: Sink = Sink::try_new(&stream_handle).unwrap();
+        let file: BufReader<File> = BufReader::new(
+            File::open("C:\\Users\\hacker man __)\\Music\\Weezer - Weezer\\Hash Pipe.wav").unwrap(),
+        );
+        let source: Decoder<BufReader<File>> = Decoder::new(file).unwrap();
+        audio_handler.append(source);
         Self {
-            version: 0,
-            items: ["Foo", "Bar", "Baz", "Qux", "Corge", "Waldo", "Fred"]
-                .into_iter()
-                .map(From::from)
-                .collect(),
-            input: String::default(),
-            order: Order::Ascending,
+            //version: 0,
+            audio_handler,
+            //input: String::default(),
         }
     }
-}
-
-#[derive(Debug, Clone)]
-enum Message {
-    InputChanged(String),
-    ToggleOrder,
-    DeleteItem(Item),
-    AddItem(String),
-    ItemColorChanged(Item, Color),
 }
 
 impl App {
     fn update(&mut self, message: Message) {
         match message {
-            Message::InputChanged(input) => {
-                self.input = input;
+            Message::AudioHandlerPause => {
+                self.audio_handler.pause();
             }
-            Message::ToggleOrder => {
-                self.version = self.version.wrapping_add(1);
-                self.order = match self.order {
-                    Order::Ascending => Order::Descending,
-                    Order::Descending => Order::Ascending,
-                }
-            }
-            Message::AddItem(name) => {
-                self.version = self.version.wrapping_add(1);
-                self.items.insert(name.as_str().into());
-                self.input.clear();
-            }
-            Message::DeleteItem(item) => {
-                self.version = self.version.wrapping_add(1);
-                self.items.remove(&item);
-            }
-            Message::ItemColorChanged(item, color) => {
-                self.version = self.version.wrapping_add(1);
-                if self.items.remove(&item) {
-                    self.items.insert(Item {
-                        name: item.name,
-                        color,
-                    });
-                }
+            Message::AudioHandlerResume => {
+                self.audio_handler.play();
             }
         }
     }
 
     fn view(&self) -> Element<Message> {
-        let options = lazy(self.version, |_| {
-            let mut items: Vec<_> = self.items.iter().cloned().collect();
-
-            items.sort_by(|a, b| match self.order {
-                Order::Ascending => a.name.to_lowercase().cmp(&b.name.to_lowercase()),
-                Order::Descending => b.name.to_lowercase().cmp(&a.name.to_lowercase()),
-            });
-
-            column(items.into_iter().map(|item| {
-                let button = button("Delete")
-                    .on_press(Message::DeleteItem(item.clone()))
-                    .style(button::danger);
-
-                row![
-                    text(item.name.clone()).color(item.color),
-                    horizontal_space(),
-                    pick_list(Color::ALL, Some(item.color), move |color| {
-                        Message::ItemColorChanged(item.clone(), color)
-                    }),
-                    button
-                ]
-                .spacing(20)
-                .into()
-            }))
-            .spacing(10)
-        });
-
         column![
-            scrollable(options).height(Fill),
-            row![
-                text_input("Add a new option", &self.input)
-                    .on_input(Message::InputChanged)
-                    .on_submit(Message::AddItem(self.input.clone())),
-                button(text!("Toggle Order ({})", self.order)).on_press(Message::ToggleOrder)
-            ]
-            .spacing(10)
+            button("Play").on_press(Message::AudioHandlerResume),
+            button("Pause").on_press(Message::AudioHandlerPause)
         ]
         .spacing(20)
         .padding(20)
