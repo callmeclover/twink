@@ -3,8 +3,8 @@ mod utils;
 use anyhow::Result;
 use iced::{
     time::{self, Duration},
-    widget::{button, column, row, slider, text, vertical_slider},
-    Element, Subscription, Theme,
+    widget::{button, column, row, slider, text, text_input, vertical_slider},
+    Element, Subscription,
 };
 use rodio::{Decoder, OutputStream, Sink, Source};
 use std::{fs::File, io::BufReader};
@@ -32,6 +32,8 @@ enum Message {
     Seek(f32),
     /// Sets the volume of the audio handler.
     Volume(f32),
+    /// Sets the selected path.
+    TextUpdated(String),
     /// Ran every 100ms to update some UI components.
     Tick,
 }
@@ -40,6 +42,7 @@ enum Message {
 struct App {
     audio_handler: Sink,
     file: Option<String>,
+    selected_file: String,
     duration: f32,
     position: f32,
     volume: f32,
@@ -53,10 +56,11 @@ impl Default for App {
         let audio_handler: Sink = Sink::try_new(&stream_handle).unwrap();
         Self {
             audio_handler,
+            volume: 1.0,
             file: None,
+            selected_file: String::new(),
             duration: 0.0,
             position: 0.0,
-            volume: 1.0,
             is_playing: false,
         }
     }
@@ -81,15 +85,17 @@ impl App {
                 self.is_playing = false;
             }
             Message::Enqueue(path) => {
-                let file: BufReader<File> = BufReader::new(File::open(&path).unwrap());
-                let source: Decoder<BufReader<File>> = Decoder::new(file).unwrap();
-                self.duration = source
-                    .total_duration()
-                    .unwrap_or(Duration::new(0, 0))
-                    .as_secs_f32();
-                self.audio_handler.append(source);
-                self.is_playing = true;
-                self.file = Some(path);
+                if let Ok(file) = File::open(&path) {
+                    let reader: BufReader<File> = BufReader::new(file);
+                    let source: Decoder<BufReader<File>> = Decoder::new(reader).unwrap();
+                    self.duration = source
+                        .total_duration()
+                        .unwrap_or(Duration::new(0, 0))
+                        .as_secs_f32();
+                    self.audio_handler.append(source);
+                    self.is_playing = true;
+                    self.file = Some(path);
+                }
             }
             Message::Seek(position) => {
                 self.audio_handler
@@ -100,6 +106,9 @@ impl App {
             Message::Volume(volume) => {
                 self.audio_handler.set_volume(volume);
                 self.volume = volume;
+            }
+            Message::TextUpdated(text) => {
+                self.selected_file = text;
             }
             Message::Tick => {
                 if self.is_playing {
@@ -115,21 +124,26 @@ impl App {
             row![
                 button("Play").on_press(Message::Resume),
                 button("Pause").on_press(Message::Pause),
-                button("Queue Good Music").on_press(Message::Enqueue(
-                    "E:\\Music\\Weezer\\Weezer (Green Album) (2001-04-24)\\1.3 - Hash Pipe.flac"
-                        .to_string()
-                )),
-                button("Stop").on_press(Message::Stop)
+                button("Stop").on_press(Message::Stop),
             ]
             .spacing(10),
+            row![
+                text_input("", &self.selected_file).on_input(Message::TextUpdated),
+                button("Queue Good Music").on_press(Message::Enqueue(self.selected_file.clone())),
+            ],
             slider(0.0..=self.duration, self.position, Message::Seek),
-            vertical_slider(0.0..=1.0, self.volume, Message::Volume),
             text(format!(
                 "{}/{}",
                 format_duration(Duration::from_secs_f32(self.position)),
                 format_duration(Duration::from_secs_f32(self.duration))
             ))
-            .size(20)
+            .size(20),
+            vertical_slider(0.0..=1.0, self.volume, Message::Volume).height(100).step(0.01),
+            text(format!(
+                "{}%",
+                (self.volume*100.0).round()
+            ))
+            .size(20),
         ]
         .spacing(20)
         .padding(20)
