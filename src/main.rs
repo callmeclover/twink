@@ -4,7 +4,7 @@ use iced::{
     Element,
 };
 use rodio::{Decoder, OutputStream, Sink};
-use std::{fs::File, io::BufReader, sync::mpsc, thread};
+use std::{fs::File, io::BufReader};
 
 pub fn main() -> Result<()> {
     iced::run("Twink", App::update, App::view)?;
@@ -15,21 +15,16 @@ pub fn main() -> Result<()> {
 /// Event messages.
 #[derive(Debug, Clone)]
 enum Message {
-    AudioHandlerResume,
-    AudioHandlerPause,
-}
-
-#[derive(Debug, Clone)]
-enum AudioHandlerEvent {
     Resume,
     Pause,
+    Enqueue(String),
 }
 
 /// The holder for app data.
 struct App {
     //version: u8,
-    audio_handler: Sink, //mpsc::Sender<AudioHandlerEvent>,
-                         //input: String,
+    audio_handler: Sink,
+    file: Option<String>,
 }
 
 impl Default for App {
@@ -37,15 +32,11 @@ impl Default for App {
         let (stream, stream_handle) = OutputStream::try_default().unwrap();
         Box::leak(Box::new(stream));
         let audio_handler: Sink = Sink::try_new(&stream_handle).unwrap();
-        let file: BufReader<File> = BufReader::new(
-            File::open("C:\\Users\\hacker man __)\\Music\\Weezer - Weezer\\Hash Pipe.wav").unwrap(),
-        );
-        let source: Decoder<BufReader<File>> = Decoder::new(file).unwrap();
-        audio_handler.append(source);
+        
         Self {
             //version: 0,
             audio_handler,
-            //input: String::default(),
+            file: None,
         }
     }
 }
@@ -53,19 +44,26 @@ impl Default for App {
 impl App {
     fn update(&mut self, message: Message) {
         match message {
-            Message::AudioHandlerPause => {
+            Message::Pause => {
                 self.audio_handler.pause();
             }
-            Message::AudioHandlerResume => {
+            Message::Resume => {
                 self.audio_handler.play();
             }
+            Message::Enqueue(path) => {
+                let file: BufReader<File> = BufReader::new(
+                    File::open(path).unwrap(),
+                );
+                let source: Decoder<BufReader<File>> = Decoder::new(file).unwrap();
+                self.audio_handler.append(source);
+            },
         }
     }
 
     fn view(&self) -> Element<Message> {
         column![
-            button("Play").on_press(Message::AudioHandlerResume),
-            button("Pause").on_press(Message::AudioHandlerPause)
+            button("Play").on_press(Message::Resume),
+            button("Pause").on_press(Message::Pause)
         ]
         .spacing(20)
         .padding(20)
