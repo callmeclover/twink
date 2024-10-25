@@ -210,5 +210,5 @@ fn format_duration(duration: Duration) -> String {
     let minutes: u64 = (total_seconds % 3600) / 60;
     let seconds: u64 = total_seconds % 60;
 
-    format!("{:02}:{:02}:{:02}", hours, minutes, seconds)
+    format!("{hours:02}:{minutes:02}:{seconds:02}")
 }
