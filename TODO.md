@@ -9,7 +9,12 @@
         - [x] Seekbar updates Sink
         - [x] Sink updates Seekbar
       - [x] Volume
-  - [ ] ROADBLOCK: Develop alternative to `rodio`, see [`sock`](https://github.com/callmeclover/sock).
+      - [x] Clear queue/Stop
+  - [ ] Window tooling
+    - [ ] Make multi-window
+      - [ ] Main window
+      - [ ] About window
+    - [ ] Error Handling
   - [ ] Metadata tooling
     - [ ] Display metadata in human-readable format
   - [ ] Library tooling

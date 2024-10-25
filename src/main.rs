@@ -6,9 +6,9 @@ use iced::{
     widget::{button, column, row, slider, text, vertical_slider},
     Element, Subscription, Theme,
 };
-use utils::format_duration;
 use rodio::{Decoder, OutputStream, Sink, Source};
 use std::{fs::File, io::BufReader};
+use utils::format_duration;
 
 pub fn main() -> Result<()> {
     iced::application("Twink", App::update, App::view)
@@ -32,6 +32,7 @@ enum Message {
     Seek(f32),
     /// Sets the volume of the audio handler.
     Volume(f32),
+    /// Ran every 100ms to update some UI components.
     Tick,
 }
 
@@ -64,16 +65,16 @@ impl Default for App {
 impl App {
     fn update(&mut self, message: Message) {
         match message {
-            Message::Pause => {
-                self.audio_handler.pause();
-                self.is_playing = false;
-            }
             Message::Resume => {
                 self.audio_handler.play();
                 self.is_playing = true;
             }
+            Message::Pause => {
+                self.audio_handler.pause();
+                self.is_playing = false;
+            }
             Message::Stop => {
-                todo!();
+                self.audio_handler.clear();
             }
             Message::Enqueue(path) => {
                 let file: BufReader<File> = BufReader::new(File::open(&path).unwrap());
@@ -112,7 +113,8 @@ impl App {
                 button("Queue Good Music").on_press(Message::Enqueue(
                     "E:\\Music\\Weezer\\Weezer (Green Album) (2001-04-24)\\1.3 - Hash Pipe.flac"
                         .to_string()
-                ))
+                )),
+                button("Stop").on_press(Message::Stop)
             ]
             .spacing(10),
             slider(0.0..=self.duration, self.position, Message::Seek),
