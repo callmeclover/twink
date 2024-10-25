@@ -3,6 +3,8 @@ name = "twink"
 version = "0.1.0"
 edition = "2021"
 license = "GPL-3.0"
+readme = "README.md"
+author = "Clover Johnson <clover.johnson@mailfence.com>"
 
 [dependencies]
 anyhow = "1.0.91"

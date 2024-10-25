@@ -75,6 +75,10 @@ impl App {
             }
             Message::Stop => {
                 self.audio_handler.clear();
+                self.duration = 0.0;
+                self.position = 0.0;
+                self.file = None;
+                self.is_playing = false;
             }
             Message::Enqueue(path) => {
                 let file: BufReader<File> = BufReader::new(File::open(&path).unwrap());
@@ -99,6 +103,7 @@ impl App {
             }
             Message::Tick => {
                 if self.is_playing {
+                    self.is_playing = !self.audio_handler.is_paused();
                     self.position = self.audio_handler.get_pos().as_secs_f32();
                 }
             }
