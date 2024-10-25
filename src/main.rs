@@ -1,11 +1,14 @@
+mod utils;
+
 use anyhow::Result;
 use iced::{
-    time,
-    widget::{button, column, row, slider, text},
-    Element, Subscription,
+    time::{self, Duration},
+    widget::{button, column, row, slider, text, vertical_slider},
+    Element, Subscription, Theme,
 };
+use utils::format_duration;
 use rodio::{Decoder, OutputStream, Sink, Source};
-use std::{fs::File, io::BufReader, time::Duration};
+use std::{fs::File, io::BufReader};
 
 pub fn main() -> Result<()> {
     iced::application("Twink", App::update, App::view)
@@ -17,10 +20,18 @@ pub fn main() -> Result<()> {
 /// Event messages.
 #[derive(Debug, Clone)]
 enum Message {
+    /// Resumes the audio handler.
     Resume,
+    /// Pauses audio handler.
     Pause,
+    /// Pauses audio and clears the queue.
+    Stop,
+    /// Adds a file from a path to the queue.
     Enqueue(String),
+    /// Seeks through the audio.
     Seek(f32),
+    /// Sets the volume of the audio handler.
+    Volume(f32),
     Tick,
 }
 
@@ -30,6 +41,7 @@ struct App {
     file: Option<String>,
     duration: f32,
     position: f32,
+    volume: f32,
     is_playing: bool,
 }
 
@@ -38,12 +50,12 @@ impl Default for App {
         let (stream, stream_handle) = OutputStream::try_default().unwrap();
         Box::leak(Box::new(stream));
         let audio_handler: Sink = Sink::try_new(&stream_handle).unwrap();
-
         Self {
             audio_handler,
             file: None,
             duration: 0.0,
             position: 0.0,
+            volume: 1.0,
             is_playing: false,
         }
     }
@@ -59,6 +71,9 @@ impl App {
             Message::Resume => {
                 self.audio_handler.play();
                 self.is_playing = true;
+            }
+            Message::Stop => {
+                todo!();
             }
             Message::Enqueue(path) => {
                 let file: BufReader<File> = BufReader::new(File::open(&path).unwrap());
@@ -76,6 +91,10 @@ impl App {
                     .try_seek(Duration::from_secs_f32(position))
                     .unwrap();
                 self.position = position;
+            }
+            Message::Volume(volume) => {
+                self.audio_handler.set_volume(volume);
+                self.volume = volume;
             }
             Message::Tick => {
                 if self.is_playing {
@@ -97,6 +116,7 @@ impl App {
             ]
             .spacing(10),
             slider(0.0..=self.duration, self.position, Message::Seek),
+            vertical_slider(0.0..=1.0, self.volume, Message::Volume),
             text(format!(
                 "{}/{}",
                 format_duration(Duration::from_secs_f32(self.position)),
@@ -113,13 +133,4 @@ impl App {
         // Subscribe to periodic ticks to update the audio position
         time::every(Duration::from_millis(100)).map(|_| Message::Tick)
     }
-}
-
-fn format_duration(duration: Duration) -> String {
-    let total_seconds: u64 = duration.as_secs();
-    let hours: u64 = total_seconds / 3600;
-    let minutes: u64 = (total_seconds % 3600) / 60;
-    let seconds: u64 = total_seconds % 60;
-
-    format!("{hours:02}:{minutes:02}:{seconds:02}")
 }
