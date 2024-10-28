@@ -12,9 +12,7 @@
       - [x] Clear queue/Stop
   - [ ] Window tooling
     - [ ] Make multi-window
-      - [ ] Main window
-      - [ ] About window
-    - [ ] Error Handling
+    - [ ] Reimplement audio controls into multi-window code
   - [ ] Metadata tooling
     - [ ] Display metadata in human-readable format
   - [ ] Library tooling

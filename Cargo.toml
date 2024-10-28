@@ -8,5 +8,5 @@ authors = ["Clover Johnson <clover.johnson@mailfence.com>"]
 
 [dependencies]
 anyhow = "1.0.91"
-iced = { version = "0.13.1", features = ["async-std", "lazy"] }
+iced = { version = "0.13.1", features = ["async-std", "lazy", "multi-window"] }
 rodio = { version = "0.19.0", features = ["symphonia-all"] }
