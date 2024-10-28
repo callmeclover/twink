@@ -20,25 +20,29 @@ pub struct App {
     is_playing: bool,
 }
 
-impl Default for App {
-    fn default() -> Self {
+impl App {
+    pub fn new() -> (Self, Task<Message>) {
         let (stream, stream_handle) = OutputStream::try_default().unwrap();
         Box::leak(Box::new(stream));
         let audio_handler: Sink = Sink::try_new(&stream_handle).unwrap();
-        Self {
-            windows: BTreeMap::new(),
-            audio_handler,
-            volume: 1.0,
-            file: None,
-            selected_file: String::new(),
-            duration: 0.0,
-            position: 0.0,
-            is_playing: false,
-        }
-    }
-}
 
-impl App {
+        let (_id, open) = window::open(window::Settings::default());
+
+        (
+            Self {
+                windows: BTreeMap::new(),
+                audio_handler,
+                volume: 1.0,
+                file: None,
+                selected_file: String::new(),
+                duration: 0.0,
+                position: 0.0,
+                is_playing: false,
+            },
+            open.map(Message::WindowOpened),
+        )
+    }
+
     pub fn update(&mut self, message: Message) -> Task<Message> {
         match message {
             Message::Resume => {

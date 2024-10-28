@@ -11,7 +11,7 @@ pub fn main() -> Result<()> {
         .subscription(App::subscription)
         .theme(App::theme)
         .scale_factor(App::scale_factor)
-        .run()?;
+        .run_with(App::new)?;
     Ok(())
 }
 
