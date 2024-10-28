@@ -1,15 +1,15 @@
 # TODO
 
 - [ ] Part 1: Doing The Thing It Was Made To Do Poorly Just Ok
-  - [x] Get basic UI to work
-  - [x] Play audio with UI (Basic implementation)
-    - [x] Play/pause features
-    - [x] Advanced features (Seek and others)
-      - [x] Seek
-        - [x] Seekbar updates Sink
-        - [x] Sink updates Seekbar
-      - [x] Volume
-      - [x] Clear queue/Stop
+  - [ ] Get basic UI to work
+  - [ ] Play audio with UI (Basic implementation)
+    - [ ] Play/pause features
+    - [ ] Advanced features (Seek and others)
+      - [ ] Seek
+        - [ ] Seekbar updates Sink
+        - [ ] Sink updates Seekbar
+      - [ ] Volume
+      - [ ] Clear queue/Stop
   - [ ] Window tooling
     - [ ] Make multi-window
     - [ ] Reimplement audio controls into multi-window code
