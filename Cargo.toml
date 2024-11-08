@@ -7,5 +7,10 @@ readme = "README.md"
 authors = ["Clover Johnson <clover.johnson@mailfence.com>"]
 
 [dependencies]
+adw = { version = "0.7.1", package = "libadwaita", features = ["v1_5"] }
 gtk = { version = "0.9.2", package = "gtk4", features = ["v4_12"] }
-rodio = { version = "0.19.0", features = ["symphonia-all"] }
+rodio = { version = "0.20.1", features = ["symphonia-all"] }
+state = "0.6.0"
+
+[build-dependencies]
+glib-build-tools = "0.20.0"

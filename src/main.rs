@@ -1,3 +1,6 @@
+mod components;
+use components::Window;
+
 use gtk::{glib, prelude::*, Application, ApplicationWindow, Box as GtkBox, Button, Orientation};
 use rodio::{Decoder, OutputStream, Sink};
 use std::{
@@ -6,7 +9,7 @@ use std::{
     sync::{Arc, LazyLock},
 };
 
-static AUDIO_HANDLER: LazyLock<Arc<Sink>> = LazyLock::new(|| {
+pub static AUDIO_HANDLER: LazyLock<Arc<Sink>> = LazyLock::new(|| {
     Arc::new({
         let (stream, stream_handle) = OutputStream::try_default().unwrap();
         Box::leak(Box::new(stream));
@@ -14,20 +17,18 @@ static AUDIO_HANDLER: LazyLock<Arc<Sink>> = LazyLock::new(|| {
     })
 });
 
-const APP_ID: &str = "com.github.callmeclover.Twink";
+const APP_ID: &str = "com.callmeclover.Twink";
 
 fn main() -> glib::ExitCode {
     let app: Application = Application::builder().application_id(APP_ID).build();
 
-    // Connect to "activate" signal of `app`
     app.connect_activate(build_ui);
 
-    // Run the application
     app.run()
 }
 
 fn build_ui(app: &Application) {
-    let queue_button: Button = Button::builder()
+    /*let queue_button: Button = Button::builder()
         .label("Add song to queue")
         .margin_top(12)
         .margin_bottom(12)
@@ -70,7 +71,7 @@ fn build_ui(app: &Application) {
     });
 
     let elements: GtkBox = GtkBox::new(Orientation::Horizontal, 10);
-    
+
     elements.append(&queue_button);
     elements.append(&play_button);
     elements.append(&pause_button);
@@ -81,5 +82,7 @@ fn build_ui(app: &Application) {
         .child(&elements)
         .build();
 
+    window.present();*/
+    let window: Window = Window::new(app);
     window.present();
 }

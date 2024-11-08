@@ -2,6 +2,9 @@
 
 - [ ] Part 1: Doing The Thing It Was Made To Do Poorly Just Ok
   - [x] Get basic UI to work
+  - [ ] ROADBLOCK: Use Blueprint instead of XML
+    - [x] Prototyping
+    - [ ] Testing
   - [ ] Play audio with UI (Basic implementation)
     - [x] Play/pause features
     - [ ] Advanced features (Seek and others)
