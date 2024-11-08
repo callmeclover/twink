@@ -1,9 +1,9 @@
 # TODO
 
 - [ ] Part 1: Doing The Thing It Was Made To Do Poorly Just Ok
-  - [ ] Get basic UI to work
+  - [x] Get basic UI to work
   - [ ] Play audio with UI (Basic implementation)
-    - [ ] Play/pause features
+    - [x] Play/pause features
     - [ ] Advanced features (Seek and others)
       - [ ] Seek
         - [ ] Seekbar updates Sink
